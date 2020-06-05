@@ -27,6 +27,15 @@ namespace EmployeeWebApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddCors(corsOptions =>
+			{
+				corsOptions.AddPolicy("p1", confPolicy =>
+				{
+					confPolicy.AllowAnyOrigin().WithOrigins(new string[] { "http://localhost:4200" }).WithMethods("GET", "DELETE", "POST").AllowAnyHeader();
+				});
+			});
+
+
 			services.AddDbContext<EmployeeContext>(options =>
 		options.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
 			services.AddControllers();
@@ -43,6 +52,7 @@ namespace EmployeeWebApi
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
+			app.UseCors("p1");
 
 			app.UseAuthorization();
 
